@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int             @id @unique @default(autoincrement())
+  auth_id       String          @unique
+  name          String
+  Parts         Parts[]
+  Exercise      Exercise[]
+  DailyExercise DailyExercise[]
+}
+
+model Parts {
+  id           Int          @id @unique @default(autoincrement())
+  name         String
+  registerType RegisterType @default(Preset)
+  user         User?        @relation(fields: [userId], references: [id])
+  userId       Int?
+  Exercise     Exercise[]
+}
+
+model Exercise {
+  id           Int           @id @unique @default(autoincrement())
+  name         String
+  parts        Parts         @relation(fields: [partsId], references: [id])
+  registerType RegisterType?
+  user         User?         @relation(fields: [userId], references: [id])
+  partsId      Int
+  userId       Int?
+  ExerciseSet  ExerciseSet[]
+}
+
+model ExerciseSet {
+  id             Int           @id @unique @default(autoincrement())
+  exercise       Exercise      @relation(fields: [exerciseId], references: [id])
+  weight         Decimal?
+  reps           Int
+  description    String?
+  exerciseId     Int
+  ExerciseMemo   ExerciseMemo? @relation(fields: [exerciseMemoId], references: [id])
+  exerciseMemoId Int?
+}
+
+model ExerciseMemo {
+  id              Int            @id @unique @default(autoincrement())
+  set             ExerciseSet[]
+  description     String?
+  exercise_date   DateTime       @default(now())
+  DailyExercise   DailyExercise? @relation(fields: [dailyExerciseId], references: [id])
+  dailyExerciseId Int?
+}
+
+model DailyExercise {
+  id          Int            @id @unique @default(autoincrement())
+  exercises   ExerciseMemo[]
+  user        User           @relation(fields: [userId], references: [id])
+  description String?
+  day         DateTime       @default(now())
+  userId      Int
+}
+
+enum RegisterType {
+  Original
+  Preset
+}
