@@ -16,7 +16,7 @@ export default function Login() {
           await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-              redirectTo: "http://localhost:3000/api/auth/callback",
+              redirectTo: `${window.location.origin}/api/auth/callback`,
             },
           });
         }}
