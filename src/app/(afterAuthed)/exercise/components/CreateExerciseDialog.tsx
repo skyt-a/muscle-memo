@@ -3,7 +3,6 @@ import * as Dialog from "@/components/ui/dialog";
 import { FormLabel } from "@/components/ui/form-label";
 import { Input } from "@/components/ui/input";
 import { prisma } from "@/lib/prisma/server";
-import { createClient } from "@/lib/supabase/server";
 import { Parts, RegisterType, User } from "@prisma/client";
 import { FC } from "react";
 import { Stack } from "styled-system/jsx";
@@ -13,11 +12,11 @@ type Props = {
   userId: User["id"];
 };
 
-export const CreateExerciseDialog: FC<Props> = async ({ partsId, userId }) => {
+export const CreateExerciseDialog = async ({ partsId, userId }: Props) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <Button variant="link">追加＋</Button>
+        <Button variant="outline">追加＋</Button>
       </Dialog.Trigger>
       <Dialog.Backdrop />
       <Dialog.Positioner>
