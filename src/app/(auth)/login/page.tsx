@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase/client";
 
 export default function Login() {

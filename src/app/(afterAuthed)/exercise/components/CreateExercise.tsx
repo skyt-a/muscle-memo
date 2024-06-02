@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Parts, User } from "@prisma/client";
 import { useDisclosure } from "@nextui-org/modal";
 import { CreateExerciseDialog } from "@/app/(afterAuthed)/exercise/components/CreateExerciseDialog";
