@@ -1,3 +1,6 @@
+import  {  toZonedTime }  from "date-fns-tz";
+
+
 export const toISOStringWithTimezone = (date: Date): string => {
   const year = date.getFullYear().toString();
   const month = zeroPadding((date.getMonth() + 1).toString());
@@ -28,4 +31,8 @@ export const toISOStringWithTimezone = (date: Date): string => {
 
 function zeroPadding(s: string): string {
   return ("0" + s).slice(-2);
+}
+
+export const nowDate = () => {
+   return toZonedTime(new Date(), "Asia/Tokyo")
 }

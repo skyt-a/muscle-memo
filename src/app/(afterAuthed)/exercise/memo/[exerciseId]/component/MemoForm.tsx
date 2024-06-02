@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { prisma } from "@/lib/prisma/server";
-import { toISOStringWithTimezone } from "@/utils/date";
+import { nowDate, toISOStringWithTimezone } from "@/utils/date";
 import {
   DailyExercise,
   Exercise,
@@ -35,7 +35,7 @@ export const MemoForm = async ({
         if (!dailyExercise) {
           await prisma.dailyExercise.create({
             data: {
-              day: toISOStringWithTimezone(new Date()),
+              day: toISOStringWithTimezone(nowDate()),
               exercises: {
                 create: {
                   exerciseId: exercise?.id,
