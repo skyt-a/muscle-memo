@@ -1,71 +1,50 @@
-import { Button } from "@/components/ui/button";
-import * as Dialog from "@/components/ui/dialog";
-import { FormLabel } from "@/components/ui/form-label";
-import { Input } from "@/components/ui/input";
-import { prisma } from "@/lib/prisma/server";
-import { Parts, RegisterType, User } from "@prisma/client";
-import { FC } from "react";
-import { Stack } from "styled-system/jsx";
+"use client"
+import { createExerciseAction } from "@/app/(afterAuthed)/exercise/components/action";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import {
+  Modal, 
+  ModalContent, 
+  ModalHeader, 
+  ModalBody, 
+} from "@nextui-org/modal";
+import { Parts, User } from "@prisma/client";
+import toast from "react-hot-toast";
 
 type Props = {
   partsId: Parts["id"];
   userId: User["id"];
+  isOpen: boolean,
+  onClose: () => void,
 };
 
-export const CreateExerciseDialog = async ({ partsId, userId }: Props) => {
+export const CreateExerciseDialog =  ({ partsId, userId, isOpen, onClose }: Props) => {
+  // const action = createExerciseAction(partsId, userId)
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <Button variant="outline">追加＋</Button>
-      </Dialog.Trigger>
-      <Dialog.Backdrop />
-      <Dialog.Positioner>
-        <Dialog.Content>
-          <form
-            action={async (form: FormData) => {
-              "use server";
-              if (!user) {
-                return;
-              }
-              const name = form.get("name") as string;
-              await prisma.exercise.create({
-                data: {
-                  name,
-                  partsId,
-                  registerType: RegisterType.Original,
-                  userId: user.id,
-                },
-              });
-            }}
-          >
-            <Stack gap="8" p="6">
-              <Stack gap="1">
-                <Dialog.Title>エクササイズを追加</Dialog.Title>
-                <Dialog.Description>
-                  <FormLabel htmlFor="name">エクササイズ名</FormLabel>
-                  <Input id="name" name="name" placeholder="エクササイズ名" />
-                </Dialog.Description>
-              </Stack>
-              <Stack gap="3" direction="row" width="full">
-                <Dialog.CloseTrigger asChild>
-                  <Button variant="outline" width="full">
-                    Cancel
-                  </Button>
-                </Dialog.CloseTrigger>
-                <Button width="full" type="submit">
-                  Confirm
-                </Button>
-              </Stack>
-            </Stack>{" "}
-          </form>
-
-          {/* <Dialog.CloseTrigger asChild position="absolute" top="2" right="2">
-            <IconButton aria-label="Close Dialog" variant="ghost" size="sm">
-              <XIcon />
-            </IconButton>
-          </Dialog.CloseTrigger> */}
-        </Dialog.Content>
-      </Dialog.Positioner>
-    </Dialog.Root>
+      <Modal isOpen={isOpen} onClose={onClose} size="lg" radius="md" title="エクササイズを追加">
+      <ModalContent>
+        <ModalHeader>エクササイズを追加</ModalHeader>
+        <ModalBody>
+        <form
+          action={async (form: FormData) => {
+            await createExerciseAction(form);
+            toast("エクササイズを追加しました");
+          }}
+        >
+          <div>
+            <Input id="name" name="name" placeholder="エクササイズ名" />
+            <input type="hidden" name="partsId" value={String(partsId)} hidden/>
+            <input type="hidden" name="userId" value={String(userId)} hidden/>
+            <Button variant="solid" fullWidth>
+              Cancel
+            </Button>
+            <Button fullWidth type="submit">
+              Confirm
+            </Button>
+          </div>
+        </form>
+        </ModalBody>
+        </ModalContent>
+      </Modal>
   );
 };

@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import classname from "./layout.module.css"
+import { BottomNavigation } from "@/components/layout/BottomNavigation";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,5 +20,7 @@ export default async function RootLayout({
   if (error || !data?.user) {
     redirect("/login");
   }
-  return <>{children}</>;
+  return <div className={classname.wrapper}>{children}<BottomNavigation /></div>;
 }
+
+

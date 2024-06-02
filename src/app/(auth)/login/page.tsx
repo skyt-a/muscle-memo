@@ -1,11 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase/client";
-import { Auth } from "@supabase/auth-ui-react";
-import {
-  // Import predefined theme
-  ThemeSupa,
-} from "@supabase/auth-ui-shared";
 
 export default function Login() {
   return (

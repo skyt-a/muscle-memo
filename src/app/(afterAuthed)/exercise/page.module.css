@@ -1,0 +1,4 @@
+.wrapper {
+  width: calc(100vw - 80px);
+  margin: 40px;
+}

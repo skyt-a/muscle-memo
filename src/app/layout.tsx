@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import * as classname from "./layout.module.css";
+import { StyleProvider } from "@/lib/styles/StyleProvider";
+import  { Toaster } from 'react-hot-toast';
+
 import "./global.css";
-import { css } from "styled-system/css";
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,21 +17,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" className="dark">
       <body>
-        <div className={Wrapper}>
-          <div className={Inner}>{children}</div>
+      <StyleProvider>
+        <div className={classname.wrapper}>
+          <div className={classname.container}>{children}</div>
         </div>
+        <Toaster />
+        </StyleProvider>
       </body>
     </html>
   );
 }
 
-const Wrapper = css({
-  display: "flex",
-  justifyContent: "center",
-});
-
-const Inner = css({
-  maxWidth: "430px",
-});

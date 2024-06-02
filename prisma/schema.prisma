@@ -32,20 +32,21 @@ model Parts {
 }
 
 model Exercise {
-  id           Int           @id @unique @default(autoincrement())
+  id           Int            @id @unique @default(autoincrement())
   name         String
-  parts        Parts         @relation(fields: [partsId], references: [id])
+  parts        Parts          @relation(fields: [partsId], references: [id])
   registerType RegisterType?
-  user         User?         @relation(fields: [userId], references: [id])
+  user         User?          @relation(fields: [userId], references: [id])
   partsId      Int
   userId       Int?
   ExerciseSet  ExerciseSet[]
+  ExerciseMemo ExerciseMemo[]
 }
 
 model ExerciseSet {
   id             Int           @id @unique @default(autoincrement())
   exercise       Exercise      @relation(fields: [exerciseId], references: [id])
-  weight         Decimal?
+  weight         Float?
   reps           Int
   description    String?
   exerciseId     Int
@@ -55,9 +56,11 @@ model ExerciseSet {
 
 model ExerciseMemo {
   id              Int            @id @unique @default(autoincrement())
+  exercise        Exercise       @relation(fields: [exerciseId], references: [id])
+  exerciseId      Int
   set             ExerciseSet[]
   description     String?
-  exercise_date   DateTime       @default(now())
+  exercise_date   DateTime       @default(now()) @db.Date
   DailyExercise   DailyExercise? @relation(fields: [dailyExerciseId], references: [id])
   dailyExerciseId Int?
 }
@@ -67,7 +70,7 @@ model DailyExercise {
   exercises   ExerciseMemo[]
   user        User           @relation(fields: [userId], references: [id])
   description String?
-  day         DateTime       @default(now())
+  day         DateTime       @default(now()) @db.Date
   userId      Int
 }
 

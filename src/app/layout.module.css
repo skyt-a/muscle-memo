@@ -1,0 +1,7 @@
+.wrapper {
+  display: flex;
+}
+
+.container {
+  max-width: 430px;
+}
