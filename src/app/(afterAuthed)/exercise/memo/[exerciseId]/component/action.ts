@@ -45,31 +45,13 @@ export const exerciseMemoUpdateAction = async (
     })
   } else {
     if (exerciseMemo && set) {
-      await prisma.dailyExercise.update({
+      await prisma.exerciseSet.update({
         where: {
-          id: dailyExercise?.id,
+          id: set?.id,
         },
         data: {
-          exercises: {
-            update: {
-              data: {
-                set: {
-                  update: {
-                    where: {
-                      id: set?.id,
-                    },
-                    data: {
-                      weight,
-                      reps,
-                    },
-                  },
-                },
-              },
-              where: {
-                id: exerciseMemo?.id,
-              },
-            },
-          },
+          weight,
+          reps,
         },
       })
     } else if (exerciseMemo && !set) {

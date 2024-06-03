@@ -67,7 +67,7 @@ export const MemoForm = ({
             type="number"
             name="reps"
             placeholder="回数"
-            defaultValue={String(targetSet?.weight ?? 0)}
+            defaultValue={String(targetSet?.reps ?? 0)}
           />
           reps
         </div>
