@@ -22,6 +22,7 @@ type Props = {
   user: User
   targetSet?: ExerciseSet
   exerciseMemo?: ExerciseMemo | null
+  date: Date
 }
 
 export const MemoForm = ({
@@ -30,12 +31,14 @@ export const MemoForm = ({
   exercise,
   user,
   targetSet,
+  date,
 }: Props) => {
   const ref = createRef<HTMLFormElement>()
   return (
     <form
       ref={ref}
       action={async (form: FormData) => {
+        console.log(date)
         await exerciseMemoUpdateAction(
           form,
           dailyExercise,
@@ -43,6 +46,7 @@ export const MemoForm = ({
           user,
           exerciseMemo ?? null,
           targetSet ?? null,
+          date,
         )
         toast('エクササイズメモの追加が完了しました')
         ref.current?.reset()

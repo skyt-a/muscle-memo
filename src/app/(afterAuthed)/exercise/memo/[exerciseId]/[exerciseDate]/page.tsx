@@ -1,31 +1,32 @@
-import { prisma } from "@/lib/prisma/server";
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import { toISOStringWithTimezone } from "@/utils/date";
-import { MemoForm } from "@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/MemoForm";
-import styled from "./page.module.css";
+import { MemoForm } from '@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/MemoForm'
+import { prisma } from '@/lib/prisma/server'
+import { createClient } from '@/lib/supabase/server'
+import { toFormattedDate } from '@/utils/date'
+import { redirect } from 'next/navigation'
+import styled from './page.module.css'
 
 export default async function Memo({
   params,
 }: {
-  params: { exerciseId: number; exerciseDate: string };
+  params: { exerciseId: number; exerciseDate: string }
 }) {
-  const [year, month, day] = params.exerciseDate.split("-").map(Number);
-  const supabase = createClient();
-  const { data } = await supabase.auth.getUser();
+  const [year, month, day] = params.exerciseDate.split('-').map(Number)
+  const targetDate = new Date(year, month - 1, day)
+  const supabase = createClient()
+  const { data } = await supabase.auth.getUser()
   const user = await prisma.user.findUnique({
     where: {
       auth_id: data.user?.id,
     },
-  });
+  })
   if (!user) {
-    redirect("/login");
+    redirect('/login')
   }
   const exercise = await prisma.exercise.findUniqueOrThrow({
     where: {
       id: Number(params.exerciseId),
     },
-  });
+  })
   const dailyExercise = await prisma.dailyExercise.findFirst({
     include: {
       exercises: {
@@ -36,14 +37,14 @@ export default async function Memo({
     },
     where: {
       userId: user.id,
-      day: toISOStringWithTimezone(new Date(year, month - 1, day)),
+      day: toFormattedDate(targetDate),
       exercises: {
         some: {
           exerciseId: exercise.id,
         },
       },
     },
-  });
+  })
   const targetExerciseMemo = dailyExercise?.id
     ? await prisma.exerciseMemo.findFirst({
         include: {
@@ -53,7 +54,8 @@ export default async function Memo({
           dailyExerciseId: dailyExercise?.id,
         },
       })
-    : null;
+    : null
+  console.log('target', targetDate)
   return (
     <main className={styled.wrapper}>
       今日の{exercise.name}
@@ -67,6 +69,7 @@ export default async function Memo({
             targetSet={s}
             exerciseMemo={targetExerciseMemo}
             key={s.id}
+            date={targetDate}
           />
         </section>
       ))}
@@ -77,8 +80,9 @@ export default async function Memo({
           exercise={exercise}
           user={user}
           exerciseMemo={targetExerciseMemo}
+          date={targetDate}
         />
       </section>
     </main>
-  );
+  )
 }

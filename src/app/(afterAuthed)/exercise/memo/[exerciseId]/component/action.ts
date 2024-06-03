@@ -1,6 +1,6 @@
 'use server'
 import { prisma } from '@/lib/prisma/server'
-import { nowDate, toISOStringWithTimezone } from '@/utils/date'
+import { nowDate, toFormattedDate } from '@/utils/date'
 import {
   DailyExercise,
   Exercise,
@@ -19,16 +19,18 @@ export const exerciseMemoUpdateAction = async (
   user: User,
   exerciseMemo: ExerciseMemo | null,
   set: ExerciseSet | null,
+  date: Date,
 ) => {
   const weight = Number(form.get('weight'))
   const reps = Number(form.get('reps'))
   if (!dailyExercise) {
     await prisma.dailyExercise.create({
       data: {
-        day: toISOStringWithTimezone(nowDate()),
+        day: toFormattedDate(date),
         exercises: {
           create: {
             exerciseId: exercise?.id,
+            exercise_date: toFormattedDate(nowDate()),
             set: {
               create: {
                 exerciseId: exercise?.id,
@@ -96,11 +98,9 @@ export const exerciseMemoUpdateAction = async (
       })
     }
     revalidatePath(
-      `/exercise/memo/${exercise.id}/${format(
-        dailyExercise?.day ?? nowDate(),
-        'yyyy-M-d',
-        { locale: ja },
-      )}`,
+      `/exercise/memo/${exercise.id}/${format(date ?? nowDate(), 'yyyy-M-d', {
+        locale: ja,
+      })}`,
     )
   }
 }

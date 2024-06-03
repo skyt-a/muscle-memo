@@ -1,13 +1,13 @@
-"use server";
+'use server'
 
-import { prisma } from "@/lib/prisma/server";
-import { RegisterType } from "@prisma/client";
-import { revalidatePath } from "next/cache";
+import { prisma } from '@/lib/prisma/server'
+import { RegisterType } from '@prisma/client'
+import { revalidatePath } from 'next/cache'
 
 export const createExerciseAction = async (form: FormData) => {
-  const name = form.get("name") as string;
-  const partsId = Number(form.get("partsId"));
-  const userId = Number(form.get("userId"));
+  const name = form.get('name') as string
+  const partsId = Number(form.get('partsId'))
+  const userId = Number(form.get('userId'))
   await prisma.exercise.create({
     data: {
       name,
@@ -15,6 +15,15 @@ export const createExerciseAction = async (form: FormData) => {
       registerType: RegisterType.Original,
       userId,
     },
-  });
-  revalidatePath("/exercise");
-};
+  })
+  revalidatePath('/exercise')
+}
+
+export const deleteExerciseAction = async (id: number) => {
+  await prisma.exercise.delete({
+    where: {
+      id,
+    },
+  })
+  revalidatePath('/exercise')
+}

@@ -1,11 +1,12 @@
-"use client";
+'use client'
 
-import { Calendar, DateValue } from "@nextui-org/calendar";
-import { useRouter } from "next/navigation";
+import { Calendar, DateValue } from '@nextui-org/calendar'
+import { useRouter } from 'next/navigation'
+import styled from './calendar.module.css'
 
 type Props = {
-  dates: Date[];
-};
+  dates: Date[]
+}
 
 export const ExerciseCalendar = ({ dates }: Props) => {
   const isDateUnavailable = (date: DateValue) => {
@@ -13,18 +14,20 @@ export const ExerciseCalendar = ({ dates }: Props) => {
       (d) =>
         d.getFullYear() === date.year &&
         d.getMonth() + 1 === date.month &&
-        d.getDate() === date.day
-    );
-  };
-  const router = useRouter();
+        d.getDate() === date.day,
+    )
+  }
+  const router = useRouter()
   return (
-    <Calendar
-      isDateUnavailable={isDateUnavailable}
-      onChange={(value) => {
-        router.push(
-          `/exercise/memo/view/${value.year}-${value.month}-${value.day}`
-        );
-      }}
-    />
-  );
-};
+    <div className={styled.wrapper}>
+      <Calendar
+        isDateUnavailable={isDateUnavailable}
+        onChange={(value) => {
+          router.push(
+            `/exercise/memo/view/${value.year}-${value.month}-${value.day}`,
+          )
+        }}
+      />
+    </div>
+  )
+}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "DailyExercise" ALTER COLUMN "day" DROP DEFAULT,
+ALTER COLUMN "day" SET DATA TYPE TEXT;

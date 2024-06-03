@@ -60,7 +60,7 @@ model ExerciseMemo {
   exerciseId      Int
   set             ExerciseSet[]
   description     String?
-  exercise_date   DateTime       @default(now()) @db.Date
+  exercise_date   String       
   DailyExercise   DailyExercise? @relation(fields: [dailyExerciseId], references: [id])
   dailyExerciseId Int?
 }
@@ -70,7 +70,7 @@ model DailyExercise {
   exercises   ExerciseMemo[]
   user        User           @relation(fields: [userId], references: [id])
   description String?
-  day         DateTime       @default(now()) @db.Date
+  day         String
   userId      Int
 }
 
