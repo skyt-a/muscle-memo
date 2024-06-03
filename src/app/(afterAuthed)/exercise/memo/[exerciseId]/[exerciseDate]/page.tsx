@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { toISOStringWithTimezone } from "@/utils/date";
 import { MemoForm } from "@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/MemoForm";
+import styled from "./page.module.css";
 
 export default async function Memo({
   params,
@@ -43,7 +44,6 @@ export default async function Memo({
       },
     },
   });
-  console.log(dailyExercise);
   const targetExerciseMemo = dailyExercise?.id
     ? await prisma.exerciseMemo.findFirst({
         include: {
@@ -55,7 +55,7 @@ export default async function Memo({
       })
     : null;
   return (
-    <main>
+    <main className={styled.wrapper}>
       今日の{exercise.name}
       {targetExerciseMemo?.set.map((s, i) => (
         <section key={s.id}>

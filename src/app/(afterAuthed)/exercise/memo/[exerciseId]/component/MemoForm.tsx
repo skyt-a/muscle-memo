@@ -1,8 +1,7 @@
-
+"use client";
+import { exerciseMemoUpdateAction } from "@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { prisma } from "@/lib/prisma/server";
-import { nowDate, toISOStringWithTimezone } from "@/utils/date";
 import {
   DailyExercise,
   Exercise,
@@ -10,6 +9,10 @@ import {
   ExerciseSet,
   User,
 } from "@prisma/client";
+import { format } from "date-fns";
+import { revalidatePath } from "next/cache";
+import { createRef } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
   dailyExercise: DailyExercise | null;
@@ -26,83 +29,14 @@ export const MemoForm = async ({
   user,
   targetSet,
 }: Props) => {
+    const ref = createRef<HTMLFormElement>();
   return (
     <form
+     ref={ref}
       action={async (form: FormData) => {
-        "use server";
-        const weight = Number(form.get("weight"));
-        const reps = Number(form.get("reps"));
-        if (!dailyExercise) {
-          await prisma.dailyExercise.create({
-            data: {
-              day: toISOStringWithTimezone(nowDate()),
-              exercises: {
-                create: {
-                  exerciseId: exercise?.id,
-                  set: {
-                    create: {
-                      exerciseId: exercise?.id,
-                      weight,
-                      reps,
-                    },
-                  },
-                },
-              },
-              userId: user?.id,
-            },
-          });
-        } else {
-          if (exerciseMemo && targetSet) {
-            await prisma.dailyExercise.update({
-              where: {
-                id: dailyExercise?.id,
-              },
-              data: {
-                exercises: {
-                  id: exerciseMemo?.id,
-                  update: {
-                    data: {
-                      set: {
-                        update: {
-                          exerciseId: exercise?.id,
-                          weight,
-                          reps,
-                        },
-                      },
-                    },
-                    where: {
-                      id: targetSet?.id,
-                    },
-                  },
-                },
-              },
-            });
-          } else if (exerciseMemo && !targetSet) {
-            await prisma.dailyExercise.update({
-              where: {
-                id: dailyExercise?.id,
-              },
-              data: {
-                exercises: {
-                  update: {
-                    data: {
-                      set: {
-                        create: {
-                          exerciseId: exercise?.id,
-                          weight,
-                          reps,
-                        },
-                      },
-                    },
-                    where: {
-                      id: exerciseMemo?.id,
-                    },
-                  },
-                },
-              },
-            });
-          }
-        }
+        await exerciseMemoUpdateAction(form, dailyExercise, exercise, user, exerciseMemo ?? null, targetSet ?? null);
+        toast("エクササイズメモの追加が完了しました");
+        ref.current?.reset();
       }}
     >
       <Input
