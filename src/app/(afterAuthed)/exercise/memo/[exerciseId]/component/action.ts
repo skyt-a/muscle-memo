@@ -1,16 +1,16 @@
-"use server";
-import { prisma } from "@/lib/prisma/server";
-import { nowDate, toISOStringWithTimezone } from "@/utils/date";
+'use server'
+import { prisma } from '@/lib/prisma/server'
+import { nowDate, toISOStringWithTimezone } from '@/utils/date'
 import {
   DailyExercise,
   Exercise,
   ExerciseMemo,
   ExerciseSet,
   User,
-} from "@prisma/client";
-import { format } from "date-fns";
-import { revalidatePath } from "next/cache";
-import { ja } from "date-fns/locale";
+} from '@prisma/client'
+import { format } from 'date-fns'
+import { ja } from 'date-fns/locale'
+import { revalidatePath } from 'next/cache'
 
 export const exerciseMemoUpdateAction = async (
   form: FormData,
@@ -18,10 +18,10 @@ export const exerciseMemoUpdateAction = async (
   exercise: Exercise,
   user: User,
   exerciseMemo: ExerciseMemo | null,
-  set: ExerciseSet | null
+  set: ExerciseSet | null,
 ) => {
-  const weight = Number(form.get("weight"));
-  const reps = Number(form.get("reps"));
+  const weight = Number(form.get('weight'))
+  const reps = Number(form.get('reps'))
   if (!dailyExercise) {
     await prisma.dailyExercise.create({
       data: {
@@ -40,7 +40,7 @@ export const exerciseMemoUpdateAction = async (
         },
         userId: user?.id,
       },
-    });
+    })
   } else {
     if (exerciseMemo && set) {
       await prisma.dailyExercise.update({
@@ -69,7 +69,7 @@ export const exerciseMemoUpdateAction = async (
             },
           },
         },
-      });
+      })
     } else if (exerciseMemo && !set) {
       await prisma.dailyExercise.update({
         where: {
@@ -93,14 +93,31 @@ export const exerciseMemoUpdateAction = async (
             },
           },
         },
-      });
+      })
     }
     revalidatePath(
       `/exercise/memo/${exercise.id}/${format(
         dailyExercise?.day ?? nowDate(),
-        "yyyy-M-d",
-        { locale: ja }
-      )}`
-    );
+        'yyyy-M-d',
+        { locale: ja },
+      )}`,
+    )
   }
-};
+}
+
+export const deleteExerciseSetAction = async (
+  id: number,
+  exerciseId: number,
+  day: Date | undefined,
+) => {
+  await prisma.exerciseSet.delete({
+    where: {
+      id,
+    },
+  })
+  revalidatePath(
+    `/exercise/memo/${exerciseId}/${format(day ?? nowDate(), 'yyyy-M-d', {
+      locale: ja,
+    })}`,
+  )
+}

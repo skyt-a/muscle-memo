@@ -1,0 +1,14 @@
+.input-wrapper {
+  display: flex;
+  column-gap: 16px;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.input {
+  text-align: right;
+}

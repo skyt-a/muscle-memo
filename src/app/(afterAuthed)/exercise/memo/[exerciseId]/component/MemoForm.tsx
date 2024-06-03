@@ -1,64 +1,95 @@
-"use client";
-import { exerciseMemoUpdateAction } from "@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/action";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+'use client'
+import {
+  deleteExerciseSetAction,
+  exerciseMemoUpdateAction,
+} from '@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/action'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   DailyExercise,
   Exercise,
   ExerciseMemo,
   ExerciseSet,
   User,
-} from "@prisma/client";
-import { format } from "date-fns";
-import { revalidatePath } from "next/cache";
-import { createRef } from "react";
-import toast from "react-hot-toast";
+} from '@prisma/client'
+import { createRef } from 'react'
+import toast from 'react-hot-toast'
+import styled from './MemoForm.module.css'
 
 type Props = {
-  dailyExercise: DailyExercise | null;
-  exercise: Exercise;
-  user: User;
-  targetSet?: ExerciseSet;
-  exerciseMemo?: ExerciseMemo | null;
-};
+  dailyExercise: DailyExercise | null
+  exercise: Exercise
+  user: User
+  targetSet?: ExerciseSet
+  exerciseMemo?: ExerciseMemo | null
+}
 
-export const MemoForm = async ({
+export const MemoForm = ({
   dailyExercise,
   exerciseMemo,
   exercise,
   user,
   targetSet,
 }: Props) => {
-    const ref = createRef<HTMLFormElement>();
+  const ref = createRef<HTMLFormElement>()
   return (
     <form
-     ref={ref}
+      ref={ref}
       action={async (form: FormData) => {
-        await exerciseMemoUpdateAction(form, dailyExercise, exercise, user, exerciseMemo ?? null, targetSet ?? null);
-        toast("エクササイズメモの追加が完了しました");
-        ref.current?.reset();
+        await exerciseMemoUpdateAction(
+          form,
+          dailyExercise,
+          exercise,
+          user,
+          exerciseMemo ?? null,
+          targetSet ?? null,
+        )
+        toast('エクササイズメモの追加が完了しました')
+        ref.current?.reset()
       }}
     >
-      <Input
-        type="number"
-        name="weight"
-        placeholder="重量"
-        defaultValue={String(targetSet?.weight ?? 0)}
-      />
-      <Input
-        type="number"
-        name="reps"
-        placeholder="回数"
-        defaultValue={String(targetSet?.weight ?? 0)}
-      />
-      <Button
-        variant="solid"
-        type="submit"
-        size="lg"
-        fullWidth
-      >
-        登録
-      </Button>
+      <div className={styled['input-wrapper']}>
+        <div className={styled.input}>
+          <Input
+            type="number"
+            name="weight"
+            placeholder="重量"
+            defaultValue={String(targetSet?.weight ?? 0)}
+          />
+          kg
+        </div>
+        <div className={styled.input}>
+          <Input
+            type="number"
+            name="reps"
+            placeholder="回数"
+            defaultValue={String(targetSet?.weight ?? 0)}
+          />
+          reps
+        </div>
+      </div>
+      <div className={styled['button-wrapper']}>
+        {targetSet && (
+          <Button
+            variant="light"
+            size="sm"
+            type="button"
+            onClick={async () => {
+              await deleteExerciseSetAction(
+                targetSet.id,
+                exercise.id,
+                dailyExercise?.day,
+              )
+              toast('エクササイズメモの削除が完了しました')
+            }}
+          >
+            削除
+          </Button>
+        )}
+        <Button variant="solid" type="submit" size="sm" className="mt-4">
+          {!targetSet ? '登録' : '更新'}
+        </Button>
+      </div>
     </form>
-  );
-};
+  )
+}
