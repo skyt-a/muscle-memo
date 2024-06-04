@@ -1,16 +1,16 @@
 import { prisma } from '@/lib/prisma/server'
 import { createClient } from '@/lib/supabase/server'
-import { toFormattedDate } from '@/utils/date'
+import { formattedDateToDate, toFormattedDate } from '@/utils/date'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export default async function MemoView({
   params,
 }: {
-  params: { exerciseDate: String }
+  params: { exerciseDate: string }
 }) {
   const supabase = createClient()
-  const { data, error } = await supabase.auth.getUser()
+  const { data } = await supabase.auth.getUser()
   const user = await prisma.user.findUnique({
     where: {
       auth_id: data.user?.id,
@@ -19,8 +19,7 @@ export default async function MemoView({
   if (!user) {
     redirect('/login')
   }
-  const [year, month, day] = params.exerciseDate.split('-').map(Number)
-  const date = new Date(year, month - 1, day)
+  const date = formattedDateToDate(params.exerciseDate)
   const targetDaily = await prisma.dailyExercise.findFirst({
     include: {
       exercises: {

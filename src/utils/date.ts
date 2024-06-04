@@ -12,3 +12,8 @@ export const nowDate = () => {
 export const toFormattedDate = (date: Date) => {
   return format(date, 'yyyy-MM-dd', { locale: ja })
 }
+
+export const formattedDateToDate = (date: string) => {
+  const [year, month, day] = date.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}

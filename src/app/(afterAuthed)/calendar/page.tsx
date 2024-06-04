@@ -1,6 +1,7 @@
 import { ExerciseCalendar } from '@/app/(afterAuthed)/calendar/components/ExerciseCalendar'
 import { prisma } from '@/lib/prisma/server'
 import { createClient } from '@/lib/supabase/server'
+import { formattedDateToDate } from '@/utils/date'
 import styled from './page.module.css'
 
 export default async function CalendarPage() {
@@ -24,7 +25,7 @@ export default async function CalendarPage() {
   })
   return (
     <main className={styled.wrapper}>
-      <ExerciseCalendar dates={dates.map((d) => d.day)} />
+      <ExerciseCalendar dates={dates.map((d) => formattedDateToDate(d.day))} />
     </main>
   )
 }

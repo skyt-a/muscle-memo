@@ -1,7 +1,7 @@
 import { MemoForm } from '@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/MemoForm'
 import { prisma } from '@/lib/prisma/server'
 import { createClient } from '@/lib/supabase/server'
-import { toFormattedDate } from '@/utils/date'
+import { formattedDateToDate, toFormattedDate } from '@/utils/date'
 import { redirect } from 'next/navigation'
 import styled from './page.module.css'
 
@@ -10,8 +10,7 @@ export default async function Memo({
 }: {
   params: { exerciseId: number; exerciseDate: string }
 }) {
-  const [year, month, day] = params.exerciseDate.split('-').map(Number)
-  const targetDate = new Date(year, month - 1, day)
+  const targetDate = formattedDateToDate(params.exerciseDate)
   const supabase = createClient()
   const { data } = await supabase.auth.getUser()
   const user = await prisma.user.findUnique({
