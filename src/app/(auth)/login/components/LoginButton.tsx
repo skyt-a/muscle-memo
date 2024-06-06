@@ -10,7 +10,9 @@ export const LoginButton = () => {
       appearance={{ theme: ThemeSupa }}
       providers={['google']}
       redirectTo={
-        typeof window !== undefined ? `/api/auth/callback` : undefined
+        typeof window !== undefined
+          ? `${window.location.origin}/api/auth/callback`
+          : undefined
       }
       localization={{
         variables: {
