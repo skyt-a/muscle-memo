@@ -1,4 +1,5 @@
 import { ExerciseCalendar } from '@/app/(afterAuthed)/calendar/components/ExerciseCalendar'
+import { TodayExerciseButton } from '@/app/(afterAuthed)/calendar/components/TodayExerciseButton'
 import { prisma } from '@/lib/prisma/server'
 import { createClient } from '@/lib/supabase/server'
 import { formattedDateToDate } from '@/utils/date'
@@ -26,6 +27,9 @@ export default async function CalendarPage() {
   return (
     <main className={styled.wrapper}>
       <ExerciseCalendar dates={dates.map((d) => formattedDateToDate(d.day))} />
+      <div className={styled['button-wrapper']}>
+        <TodayExerciseButton />
+      </div>
     </main>
   )
 }

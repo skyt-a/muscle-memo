@@ -9,8 +9,8 @@ export const nowDate = () => {
   return toZonedTime(new Date(), 'Asia/Tokyo')
 }
 
-export const toFormattedDate = (date: Date) => {
-  return format(date, 'yyyy-MM-dd', { locale: ja })
+export const toFormattedDate = (date: Date, formatStr = 'yyyy-MM-dd') => {
+  return format(date, formatStr, { locale: ja })
 }
 
 export const formattedDateToDate = (date: string) => {

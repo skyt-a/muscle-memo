@@ -54,7 +54,6 @@ export default async function Memo({
         },
       })
     : null
-  console.log('target', targetDate)
   return (
     <main className={styled.wrapper}>
       今日の{exercise.name}

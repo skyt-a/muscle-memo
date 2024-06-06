@@ -1,0 +1,28 @@
+.wrapper {
+  padding: 8px 12px;
+}
+
+.exercise-title {
+  font-size: 1.2rem;
+}
+
+.list {
+  margin-top: 1rem;
+}
+
+.item {
+  padding: 4px 12px;
+}
+
+.set-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+}
+
+.button-wrapper {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+}

@@ -1,16 +1,16 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Parts, User } from "@prisma/client";
-import { useDisclosure } from "@nextui-org/modal";
-import { CreateExerciseDialog } from "@/app/(afterAuthed)/exercise/components/CreateExerciseDialog";
+'use client'
+import { CreateExerciseDialog } from '@/app/(afterAuthed)/exercise/components/CreateExerciseDialog'
+import { Button } from '@/components/ui/button'
+import { useDisclosure } from '@nextui-org/modal'
+import { Parts, User } from '@prisma/client'
 
 type Props = {
-  partsId: Parts["id"];
-  userId: User["id"];
-};
+  partsId: Parts['id']
+  userId: User['id']
+}
 
 export const CreateExercise = ({ partsId, userId }: Props) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <div>
       <Button onClick={onOpen} variant="ghost" size="sm">
@@ -23,5 +23,5 @@ export const CreateExercise = ({ partsId, userId }: Props) => {
         onClose={onClose}
       />
     </div>
-  );
-};
+  )
+}

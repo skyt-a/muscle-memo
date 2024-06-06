@@ -4,7 +4,7 @@ import { CreateExercise } from '@/app/(afterAuthed)/exercise/components/CreateEx
 import { deleteExerciseAction } from '@/app/(afterAuthed)/exercise/components/action'
 import { Button } from '@/components/ui/button'
 import { nowDate } from '@/utils/date'
-import { Accordion, AccordionItem } from '@nextui-org/react'
+import { Accordion, AccordionItem } from '@nextui-org/accordion'
 import { Exercise, Parts, User } from '@prisma/client'
 import Link from 'next/link'
 import toast from 'react-hot-toast'

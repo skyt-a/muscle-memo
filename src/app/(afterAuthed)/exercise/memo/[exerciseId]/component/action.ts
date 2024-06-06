@@ -1,6 +1,6 @@
 'use server'
 import { prisma } from '@/lib/prisma/server'
-import { nowDate, toFormattedDate } from '@/utils/date'
+import { formattedDateToDate, nowDate, toFormattedDate } from '@/utils/date'
 import {
   DailyExercise,
   Exercise,
@@ -90,7 +90,7 @@ export const exerciseMemoUpdateAction = async (
 export const deleteExerciseSetAction = async (
   id: number,
   exerciseId: number,
-  day: Date | undefined,
+  day: string | undefined,
 ) => {
   await prisma.exerciseSet.delete({
     where: {
@@ -98,8 +98,12 @@ export const deleteExerciseSetAction = async (
     },
   })
   revalidatePath(
-    `/exercise/memo/${exerciseId}/${format(day ?? nowDate(), 'yyyy-M-d', {
-      locale: ja,
-    })}`,
+    `/exercise/memo/${exerciseId}/${format(
+      day ? formattedDateToDate(day) : nowDate(),
+      'yyyy-M-d',
+      {
+        locale: ja,
+      },
+    )}`,
   )
 }
