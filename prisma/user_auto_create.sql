@@ -5,7 +5,7 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public."User" (auth_id, email)
+  insert into public."User" (auth_id, name)
   values (new.id, new.email);
   return new;
 end;

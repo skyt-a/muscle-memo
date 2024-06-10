@@ -62,7 +62,8 @@ model ExerciseMemo {
   description     String?
   exercise_date   String       
   DailyExercise   DailyExercise? @relation(fields: [dailyExerciseId], references: [id])
-  dailyExerciseId Int?
+  dailyExerciseId Int?          
+  @@unique(fields: [dailyExerciseId, exerciseId], name: "dailyExerciseId_exerciseId")
 }
 
 model DailyExercise {
@@ -72,6 +73,8 @@ model DailyExercise {
   description String?
   day         String
   userId      Int
+  
+  @@unique(fields: [day, userId], name: "day_userId")
 }
 
 enum RegisterType {

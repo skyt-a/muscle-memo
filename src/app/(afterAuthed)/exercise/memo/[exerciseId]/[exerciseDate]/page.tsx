@@ -1,3 +1,4 @@
+import { PrevExerciseView } from '@/app/(afterAuthed)/exercise/memo/[exerciseId]/[exerciseDate]/components/PrevExerciseView'
 import { MemoForm } from '@/app/(afterAuthed)/exercise/memo/[exerciseId]/component/MemoForm'
 import { prisma } from '@/lib/prisma/server'
 import { createClient } from '@/lib/supabase/server'
@@ -26,7 +27,7 @@ export default async function Memo({
       id: Number(params.exerciseId),
     },
   })
-  const dailyExercise = await prisma.dailyExercise.findFirst({
+  const prevExerciseMemo = await prisma.dailyExercise.findFirst({
     include: {
       exercises: {
         include: {
@@ -35,12 +36,32 @@ export default async function Memo({
       },
     },
     where: {
-      userId: user.id,
-      day: toFormattedDate(targetDate),
+      day: {
+        not: toFormattedDate(targetDate),
+      },
       exercises: {
         some: {
-          exerciseId: exercise.id,
+          exerciseId: Number(params.exerciseId),
         },
+      },
+    },
+    orderBy: {
+      day: 'desc',
+    },
+  })
+  console.log('prevExerciseMemo', prevExerciseMemo?.exercises[0].set)
+  const dailyExercise = await prisma.dailyExercise.findUnique({
+    include: {
+      exercises: {
+        include: {
+          set: true,
+        },
+      },
+    },
+    where: {
+      day_userId: {
+        userId: user.id,
+        day: toFormattedDate(targetDate),
       },
     },
   })
@@ -56,31 +77,48 @@ export default async function Memo({
     : null
   return (
     <main className={styled.wrapper}>
-      今日の{exercise.name}
+      <h2>今日の{exercise.name}</h2>
       {targetExerciseMemo?.set.map((s, i) => (
-        <section key={s.id}>
+        <section key={s.id} className={styled.section}>
           <h3>{i + 1}セット目</h3>
-          <MemoForm
-            dailyExercise={dailyExercise}
-            exercise={exercise}
-            user={user}
-            targetSet={s}
-            exerciseMemo={targetExerciseMemo}
-            key={s.id}
-            date={targetDate}
-          />
+          <div className={styled.inner}>
+            <MemoForm
+              dailyExercise={dailyExercise}
+              exercise={exercise}
+              user={user}
+              targetSet={s}
+              exerciseMemo={targetExerciseMemo}
+              key={s.id}
+              date={targetDate}
+            />
+          </div>
         </section>
       ))}
       <section>
         <h3>新規追加</h3>
-        <MemoForm
-          dailyExercise={dailyExercise}
-          exercise={exercise}
-          user={user}
-          exerciseMemo={targetExerciseMemo}
-          date={targetDate}
-        />
+        <div className={styled.inner}>
+          <MemoForm
+            dailyExercise={dailyExercise}
+            exercise={exercise}
+            user={user}
+            exerciseMemo={targetExerciseMemo}
+            date={targetDate}
+          />
+        </div>
       </section>
+      {prevExerciseMemo && (
+        <section className={styled['prev-section']}>
+          <h3>前回の{exercise.name}</h3>
+          <PrevExerciseView
+            day={prevExerciseMemo?.day}
+            exerciseSet={
+              prevExerciseMemo.exercises.find(
+                (exercise) => exercise.exerciseId === Number(params.exerciseId),
+              )?.set ?? []
+            }
+          />
+        </section>
+      )}
     </main>
   )
 }

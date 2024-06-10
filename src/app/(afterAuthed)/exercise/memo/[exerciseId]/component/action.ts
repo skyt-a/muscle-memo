@@ -23,6 +23,7 @@ export const exerciseMemoUpdateAction = async (
 ) => {
   const weight = Number(form.get('weight'))
   const reps = Number(form.get('reps'))
+  console.log(dailyExercise, exercise, user, exerciseMemo, set, date)
   if (!dailyExercise) {
     await prisma.dailyExercise.create({
       data: {

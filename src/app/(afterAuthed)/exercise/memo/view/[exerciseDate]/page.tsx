@@ -24,7 +24,7 @@ export default async function MemoView({
     redirect('/login')
   }
   const date = formattedDateToDate(params.exerciseDate)
-  const targetDaily = await prisma.dailyExercise.findFirst({
+  const targetDaily = await prisma.dailyExercise.findUnique({
     include: {
       exercises: {
         include: {
@@ -34,8 +34,10 @@ export default async function MemoView({
       },
     },
     where: {
-      day: toFormattedDate(date),
-      userId: user.id,
+      day_userId: {
+        day: toFormattedDate(date),
+        userId: user.id,
+      },
     },
   })
   return (

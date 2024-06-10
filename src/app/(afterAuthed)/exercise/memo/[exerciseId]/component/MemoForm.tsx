@@ -38,7 +38,6 @@ export const MemoForm = ({
     <form
       ref={ref}
       action={async (form: FormData) => {
-        console.log(date)
         await exerciseMemoUpdateAction(
           form,
           dailyExercise,
